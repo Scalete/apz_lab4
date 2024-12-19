@@ -17,7 +17,7 @@ const initialData = [
 const ReportTable = () => {
   const [data] = useState(initialData);
   const [report, setReport] = useState("");
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState<string | null | undefined>("");
 
   const generateFullReport = () => {
     const fullReport = new FullReport(data);
@@ -30,7 +30,7 @@ const ReportTable = () => {
   };
 
   const generateFilteredReport = () => {
-    const filteredReport = new FilteredReport(data, filter);
+    const filteredReport = new FilteredReport(data, filter as null);
     setReport(filteredReport.generateReport());
   };
 
@@ -70,7 +70,7 @@ const ReportTable = () => {
           type="text"
           placeholder="Фільтр за моделлю"
           className="form-control mb-2"
-          value={filter}
+          value={filter as string}
           onChange={(e) => setFilter(e.target.value)}
         />
         <button
