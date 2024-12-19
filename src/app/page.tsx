@@ -17,7 +17,7 @@ const initialData = [
 const ReportTable = () => {
   const [data] = useState(initialData);
   const [report, setReport] = useState("");
-  const [filter, setFilter] = useState<string | null | undefined>("");
+  const [filter, setFilter] = useState("");
 
   const generateFullReport = () => {
     const fullReport = new FullReport(data);
@@ -30,8 +30,22 @@ const ReportTable = () => {
   };
 
   const generateFilteredReport = () => {
-    const filteredReport = new FilteredReport(data, filter as null);
+    const filteredReport = new FilteredReport(data, filter as unknown as null);
     setReport(filteredReport.generateReport());
+  };
+
+  const saveReportAsFile = () => {
+    if (!report) {
+      alert("Спершу згенеруйте звіт!");
+      return;
+    }
+    const blob = new Blob([report], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "report.txt";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -70,7 +84,7 @@ const ReportTable = () => {
           type="text"
           placeholder="Фільтр за моделлю"
           className="form-control mb-2"
-          value={filter as string}
+          value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
         <button
@@ -78,6 +92,9 @@ const ReportTable = () => {
           onClick={generateFilteredReport}
         >
           Повний звіт із фільтром
+        </button>
+        <button className="btn btn-warning me-2" onClick={saveReportAsFile}>
+          Зберегти звіт як .txt
         </button>
       </div>
 
